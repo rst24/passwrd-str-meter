@@ -23,6 +23,9 @@ const calculatePassStr = (password) =>{
     weaknesses.push(lengthWeaknes(password));
     weaknesses.push(lowercaseWeakness(password));
     weaknesses.push(uppercaseWeakness(password));
+    weaknesses.push(numberWeakness(password));
+    weaknesses.push(specialCharactersWeakness(password));
+    weaknesses.push(repeatCharactersWeakness(password));
     return weaknesses
 }
 const lengthWeaknes = (password) =>{
@@ -48,6 +51,12 @@ const lowercaseWeakness = (password) =>{
 const uppercaseWeakness = (password) => {
     return characterTypeWeakness(password, /[A-Z]/g, 'uppercase characters')
 }
+const numberWeakness = (password) => {
+    return characterTypeWeakness(password, /[0-9]/g, 'numbers')
+}
+const specialCharactersWeakness = (password) => {
+    return characterTypeWeakness(password, /[0-9a-zA-Z\s]/g, 'special characters')
+}
 const characterTypeWeakness = (password, regex, type) =>{
     const match = password.match(regex) || [];
     if(match.length === 0){
@@ -60,6 +69,15 @@ const characterTypeWeakness = (password, regex, type) =>{
         return{
             message: `Your password could use more ${type}`,
             deduction: 5
+        }
+    }
+}
+const repeatCharactersWeakness = (password) => {
+    const matches = password.match(/(.)\1/g) || []
+    if(matches.length > 0){
+        return {
+            message: 'Your pass has repeat characters!',
+            deduction: matches.length * 10
         }
     }
 }
